@@ -22,20 +22,30 @@ import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 
-@RequiredArgsConstructor
+
 @Component
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final JwtProperties jwtProperties;
     private final AuthenticationManager authenticationManager;
 
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProperties jwtProperties) {
+        super(authenticationManager);
+        this.jwtProperties = jwtProperties;
+        this.authenticationManager = authenticationManager;
+    }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 
-                "name", 1234);
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        return super.attemptAuthentication(request, response);
+        super.setAuthenticationManager(authenticationManager);
+
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken("name", 1234);
+
+
+
+        return authenticationManager.authenticate(authenticationToken);
     }
 
     @Override
